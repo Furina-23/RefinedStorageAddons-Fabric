@@ -11,7 +11,14 @@ base {
 }
 
 tasks.withType(AbstractArchiveTask).configureEach {
-    archiveVersion = '1.20.1'
+    archiveVersion = ''
+}
+
+tasks.register('versionedRemapJar', Copy) {
+    dependsOn tasks.named('remapJar')
+    from tasks.named('remapJar').flatMap { it.archiveFile }
+    into layout.buildDirectory.dir('libs')
+    rename { 'refinedstorageaddons-fabric-1.20.1.jar' }
 }
 
 def dependencyRoot = file('../refinedstorage').isDirectory() ? '..' : '.'
@@ -26,7 +33,7 @@ dependencies {
     mappings loom.officialMojangMappings()
     modImplementation 'net.fabricmc:fabric-loader:0.19.5'
     modImplementation 'net.fabricmc.fabric-api:fabric-api:0.92.12+1.20.1'
-    modImplementation files("${dependencyRoot}/refinedstorage/build/libs/refinedstorage-fabric-1.20.1.jar")
+    modImplementation files("${dependencyRoot}/refinedstorage/build/libs/refinedstorage-fabric.jar")
     compileOnly 'com.google.code.findbugs:jsr305:3.0.2'
     testImplementation 'org.junit.jupiter:junit-jupiter:5.10.2'
 }
